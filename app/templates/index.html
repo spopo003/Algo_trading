@@ -4,8 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Algo Trading Dashboard</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+
 </head>
 <body>
     <h1>{{ message }}</h1>
+
+    <div>
+        <h2>Portfolio Weights</h2>
+        <div id='weights-chart'></div>
+        <button onclick="fetchWeights()">Loads Portfolio Weights</button>
+    </div>
+
+    <div>
+        <h2>Historical Portfolio Prices</h2>
+        <div id='prices-chart'></div>
+        <button onclick="fetchPrices()">Load historical Prices</button>
+    </div>
+
+    <script>
+        function fetchWeights() {
+            fetch('/portfolio-weights')
+                .then(response => response.json())
+                .then(data => {
+                    const fig = JSON.parse(data.graph_json);
+                    Plotly.newPlot('weights-chart', fig);
+                })
+            .catch(error => console.error('Error loading weights: ', error));
+        }
+        function fetchPrices(){
+            fetch('historical-prices')
+                .then(response => response.json())
+                .then(data => {
+                    const fig = JSON.parse(data.graph_json);
+                    Plotly.newPlot('prices-chart', fig);
+                })
+                .catch(error => console.error('Error loading prices: ', error))
+        }
+    </script>
 </body>
 </html>
